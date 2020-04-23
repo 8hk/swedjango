@@ -58,26 +58,32 @@ services:
 #      - frontend
 
   #Nginx Service
-  webserver:
-    image: nginx:alpine
-    container_name: webserver
-    restart: "no"
-    tty: true
-    volumes:
-   #   - ../backend:/var/www/sentralnews-backend/
-      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
-    ports:
-      - 80:80
-      - 443:443
-    env_file:
-     - ./.env
+#  webserver:
+#    image: nginx:alpine
+#    container_name: webserver
+#    restart: "no"
+#    tty: true
+#    volumes:
+#   #   - ../backend:/var/www/sentralnews-backend/
+#      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+#    ports:
+#      - 80:80
+#      - 443:443
+#    env_file:
+#      -
+#     - ./.env
+#
+#     network_mode: host
+#
+#
+#
 #    links:
 #      - django
 ##      - nuxt
 #    depends_on:
 #      - django
 ##      - nuxt
-    network_mode: host
+
 #    networks:
 #      - backend
 #      - frontend
@@ -88,6 +94,8 @@ networks:
     driver: bridge
   backend:
     driver: bridge
+
+
 
 #volumes:
 #  postgres_data:

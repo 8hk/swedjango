@@ -1,0 +1,110 @@
+version: '3'
+services:
+  # Postgres Service
+  postgres:
+    container_name: postgres
+    image: postgres:12.0-alpine
+    restart: "no"
+    volumes:
+      - ./docker/postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+    ports:
+      - 5432:5432
+    networks:
+      - backend
+
+#  #Django Service
+#  django:
+#    build: ./docker/django
+#    container_name: django
+#    restart: unless-stopped
+#    tty: true
+#    command: sh -c "echo yes | python manage.py collectstatic && python manage.py makemigrations  --noinput && python manage.py migrate  --noinput &&  python createsuperuser.py ${DJANGO_SUPERUSER_USERNAME} ${DJANGO_SUPERUSER_PASSWORD} &&python manage.py runserver 0.0.0.0:8000"
+#    #command: sh -c "mkdir static && python manage.py collectstatic && python manage.py makemigrations  --noinput && python manage.py migrate  --noinput &&  python createsuperuser.py ${DJANGO_SUPERUSER_USERNAME} ${DJANGO_SUPERUSER_PASSWORD} &&python manage.py runserver 0.0.0.0:8000"
+#    #   echo \"from django.contrib.auth import get_user_model; User = get_user_model(); if User.objects.filter(email='ozcan.esnaf@gmail.com').exists()==False: User.objects.create_superuser('${DJANGO_SUPERUSER_USERNAME}', '${DJANGO_SUPERUSER_PASS}')\" | python manage.py shell  &&
+#    volumes:
+#      - ./backend:/var/www/sentralnews-backend/
+#    ports:
+#      - "8000:8000"
+#    links:
+#      - postgres
+#    depends_on:
+#      - postgres
+#    env_file:
+#      - ./.env
+#    networks:
+#      - backend
+
+  # Nuxt Service
+#  nuxt:
+#    build: ./docker/nuxt/
+#    container_name: nuxt
+#    restart: "no"
+#    tty: true
+#    volumes:
+#      - ./frontend/:/var/www/sentralnews-frontend/
+#      - ./docker/nuxt/node_modules/:/var/www/sentralnews-frontend/node_modules/
+#    links:
+#      - django
+#    depends_on:
+#      - django
+#    ports:
+#      - "3000:3000"
+#    command: sh -c 'npm install && npm run dev'
+#    env_file:
+#      - ./.env
+#    networks:
+#      - frontend
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    restart: "no"
+    tty: true
+    volumes:
+   #   - ../backend:/var/www/sentralnews-backend/
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    ports:
+      - 80:80
+      - 443:443
+    env_file:
+     - ./.env
+#    links:
+#      - django
+##      - nuxt
+#    depends_on:
+#      - django
+##      - nuxt
+    network_mode: host
+#    networks:
+#      - backend
+#      - frontend
+
+#Docker Networks
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+#volumes:
+#  postgres_data:
+#    driver: local
+
+
+
+
+# https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx/
+
+# docker-compose up -d --build
+# docker-compose exec app python manage.py migrate --noinput
+# docker-compose exec django sh
+# docker-compose exec nuxt sh
+
+
+# https://jonathanmh.com/deploying-a-nuxt-js-app-with-docker/
+# https://sandro-keil.de/blog/docker-compose-with-named-volumes-and-multiple-networks/
+
+# echo \"from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser(\'ozcan\', \'ozcan.esnaf@gmail.com\', \'q1q1q1\')\" | python manage.py shell &&
